@@ -1,0 +1,115 @@
+# Thrustmaster to G29 Protocol Translator Configuration
+# Copy this file to config.toml and customize for your setup
+
+[thrustmaster_config]
+# Thrustmaster device identifiers
+vid = 0x044F                    # Guillemot/Thrustmaster Vendor ID  
+pid = 0x0004                    # Product ID (adjust for your wheel)
+serial_number = ""              # Leave empty for auto-detect
+exclusive_access = true         # Grab device exclusively (recommended)
+
+[g29_config]
+# Virtual G29 device settings
+vid = 0x046D                    # Logitech Vendor ID
+pid = 0xC24F                    # G29 Product ID
+product_string = "G29 Driving Force Racing Wheel"
+manufacturer_string = "Logitech"
+serial_number = "TM2G29001"     # Virtual serial number
+use_custom_vid_pid = false      # Set true to avoid VID/PID conflicts
+
+[input_config]
+# Steering settings
+steering_range = 900            # Degrees of rotation (270, 540, 900, 1080)
+steering_deadzone = 0.02        # Center deadzone (0.0 - 1.0)
+
+# Axis scaling multipliers
+[input_config.axis_scaling]
+steering_multiplier = 1.0       # Steering sensitivity
+throttle_multiplier = 1.0       # Throttle sensitivity  
+brake_multiplier = 1.0          # Brake sensitivity
+clutch_multiplier = 1.0         # Clutch sensitivity
+
+# Pedal response curves
+[input_config.pedal_curves]
+throttle_curve = "Linear"       # Linear, Squared, Cubed, Custom
+brake_curve = "Linear"          # Brake pedal curve
+clutch_curve = "Linear"         # Clutch pedal curve
+
+# Button mapping (Thrustmaster button -> G29 button)
+[input_config.button_mapping]
+0 = 0    # X button
+1 = 1    # A button  
+2 = 2    # B button
+3 = 3    # Y button
+4 = 4    # LB (left bumper)
+5 = 5    # RB (right bumper)
+6 = 6    # LT (left trigger)
+7 = 7    # RT (right trigger)
+8 = 8    # View/Back button
+9 = 9    # Menu/Start button
+10 = 10  # Left stick click
+11 = 11  # Right stick click
+12 = 12  # Additional button
+13 = 13  # Additional button
+
+[output_config]
+# LED and output settings
+led_support = true              # Enable LED rev-strip translation
+led_brightness = 1.0            # LED brightness (0.0 - 1.0)
+
+[ffb_config]
+# Force feedback settings
+enabled = true                  # Enable force feedback
+global_gain = 1.0              # Master FFB gain (0.0 - 1.0)
+
+# Individual effect gains
+spring_gain = 1.0              # Spring effect strength
+damper_gain = 1.0              # Damper effect strength  
+friction_gain = 1.0            # Friction effect strength
+constant_gain = 1.0            # Constant force strength
+periodic_gain = 1.0            # Periodic effect strength (sine, square, etc.)
+ramp_gain = 1.0                # Ramp effect strength
+autocenter_gain = 0.2          # Autocenter spring strength
+
+# Physical limits
+max_force = 2.5                # Maximum force in Newtons
+update_rate_hz = 1000          # FFB update frequency (Hz)
+
+[logging_config]
+# Logging settings
+level = "info"                 # trace, debug, info, warn, error
+log_to_file = false            # Enable file logging
+log_file_path = "tm-g29.log"   # Log file path (when enabled)
+log_hid_reports = false        # Log raw HID reports (debug)
+log_ffb_commands = false       # Log FFB commands (debug)
+
+# Advanced Configuration Examples:
+
+# Custom pedal curve (lookup table)
+# [input_config.pedal_curves]
+# throttle_curve = { Custom = [0.0, 0.1, 0.3, 0.6, 1.0] }
+
+# Device-specific button mapping for different wheel models
+# [input_config.button_mapping]
+# # Example for Thrustmaster T300RS
+# 0 = 2    # Map X to B
+# 1 = 0    # Map A to X
+# # etc...
+
+# Fine-tuned FFB settings for specific games
+# [ffb_config]
+# # For racing sims that prefer strong centering
+# spring_gain = 1.5
+# autocenter_gain = 0.5
+# 
+# # For arcade games with heavy effects
+# constant_gain = 0.7
+# periodic_gain = 0.8
+
+# Platform-specific optimizations
+# [thrustmaster_config]
+# # Windows: May need different PID for some wheels
+# pid = 0x0005
+# 
+# # Linux: Specific hidraw device path
+# # device_path = "/dev/hidraw0" 

@@ -1,0 +1,56 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+debug.log
+
+# Configuration (may contain sensitive data)
+config.toml
+*.toml
+!config.toml.example
+
+# Build artifacts
+*.deb
+*.rpm
+*.msi
+*.pkg
+*.dmg
+
+# Test artifacts
+/tests/traces/
+/tests/dumps/
+
+# Temporary files
+*.tmp
+*.temp
+.env
+
+# Documentation build
+/docs/_build/
+/docs/book/
+
+# Platform specific
+# Windows
+*.exe
+*.pdb
+
+# Linux
+*.so
+*.a
+
+# macOS
+*.dylib 
