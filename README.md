@@ -367,3 +367,4 @@ at your option.
 This software is not affiliated with, endorsed by, or sponsored by Logitech or Thrustmaster. All trademarks are the property of their respective owners.
 
 Use at your own risk. The authors are not responsible for any damage to hardware or software resulting from the use of this translator. # thrust
+# thrust
