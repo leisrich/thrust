@@ -46,52 +46,70 @@ impl ProtocolTranslator {
     }
 
     /// Start the translation loop
-    pub async fn run(&mut self) -> Result<()> {
+    pub async fn run(mut self) -> Result<()> {
         tracing::info!("Starting protocol translator");
         
+        // Use Arc and Mutex to share state between tasks
+        use std::sync::Arc;
+        use tokio::sync::Mutex;
+        
+        let translator = Arc::new(Mutex::new(self));
+        let translator_input = translator.clone();
+        let translator_output = translator.clone();
+        
         // Spawn input translation task
-        let input_task = self.run_input_translation();
+        let input_task = tokio::spawn(async move {
+            Self::run_input_translation_task(translator_input).await
+        });
         
         // Spawn output translation task  
-        let output_task = self.run_output_translation();
+        let output_task = tokio::spawn(async move {
+            Self::run_output_translation_task(translator_output).await
+        });
         
         // Run both tasks concurrently
-        tokio::try_join!(input_task, output_task)?;
+        let (input_result, output_result) = tokio::join!(input_task, output_task);
+        input_result.map_err(|e| TranslatorError::protocol_error(format!("Input task failed: {}", e)))??;
+        output_result.map_err(|e| TranslatorError::protocol_error(format!("Output task failed: {}", e)))??;
         
         Ok(())
     }
 
     /// Handle input translation (Thrustmaster -> G29)
-    async fn run_input_translation(&mut self) -> Result<()> {
+    async fn run_input_translation_task(translator: std::sync::Arc<tokio::sync::Mutex<Self>>) -> Result<()> {
         let mut interval = tokio::time::interval(std::time::Duration::from_millis(1));
         
         loop {
             interval.tick().await;
             
+            let mut t = translator.lock().await;
+            
             // Read from Thrustmaster device
-            if let Some(input_report) = self.thrustmaster.read_input().await? {
+            if let Some(input_report) = t.thrustmaster.read_input().await? {
                 // Translate to G29 format
-                let g29_report = self.input_translator.translate(input_report);
+                let g29_report = t.input_translator.translate(input_report);
                 
                 // Send to virtual G29 device
-                self.virtual_g29.send_input(g29_report).await?;
+                t.virtual_g29.send_input(g29_report).await?;
             }
         }
     }
 
     /// Handle output translation (G29 -> Thrustmaster)
-    async fn run_output_translation(&mut self) -> Result<()> {
+    async fn run_output_translation_task(translator: std::sync::Arc<tokio::sync::Mutex<Self>>) -> Result<()> {
         loop {
+            let mut t = translator.lock().await;
+            
             // Read output reports from virtual G29 device
-            if let Some(output_report) = self.virtual_g29.read_output().await? {
+            if let Some(output_report) = t.virtual_g29.read_output().await? {
                 // Handle FFB effects
-                if let Some(ffb_effect) = self.output_translator.parse_ffb_effect(output_report)? {
+                if let Some(ffb_effect) = t.output_translator.parse_ffb_effect(output_report)? {
                     // Translate to Thrustmaster IFORCE format
-                    let iforce_commands = self.ffb_engine.translate_effect(ffb_effect)?;
+                    let iforce_commands = t.ffb_engine.translate_effect(ffb_effect)?;
                     
                     // Send to Thrustmaster device
                     for command in iforce_commands {
-                        self.thrustmaster.send_ffb_command(command).await?;
+                        t.thrustmaster.send_ffb_command(command).await?;
                     }
                 }
             }

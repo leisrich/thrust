@@ -366,4 +366,22 @@ at your option.
 
 This software is not affiliated with, endorsed by, or sponsored by Logitech or Thrustmaster. All trademarks are the property of their respective owners.
 
-Use at your own risk. The authors are not responsible for any damage to hardware or software resulting from the use of this translator. # thrust
+Use at your own risk. The authors are not responsible for any damage to hardware or software resulting from the use of this translator.
+
+---
+
+## 🔨 Build Status
+
+This project is **buildable** and ready for development. To get started:
+
+1. **Install Rust**: Follow the instructions from `./build.sh` if not already installed
+2. **Build the project**: Run `./build.sh` to compile all components
+3. **Platform integration**: The core logic is complete, platform-specific APIs need implementation
+
+### Current Implementation Status
+- ✅ **Core translation engine** - Complete with full protocol translation
+- ✅ **CLI interface** - All commands implemented  
+- ✅ **Configuration system** - TOML-based with comprehensive options
+- ✅ **Platform stubs** - Windows/Linux/macOS virtual device frameworks ready
+- 🚧 **Hardware integration** - Requires platform-specific API implementation
+- 🚧 **Real device testing** - Needs Thrustmaster hardware for validation

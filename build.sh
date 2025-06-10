@@ -8,7 +8,17 @@ echo "🔧 Building Thrustmaster to G29 Protocol Translator..."
 # Check if Rust is installed
 if ! command -v cargo &> /dev/null; then
     echo "❌ Rust/Cargo not found. Please install Rust first:"
+    echo ""
+    echo "Install Rust via rustup:"
     echo "   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+    echo "   source ~/.cargo/env"
+    echo ""
+    echo "Or install via package manager:"
+    echo "   macOS:   brew install rust"
+    echo "   Ubuntu:  sudo apt install rustc cargo"
+    echo "   Windows: Download from https://rustup.rs/"
+    echo ""
+    echo "After installation, run this script again."
     exit 1
 fi
 

@@ -73,7 +73,7 @@ enum Commands {
     },
 }
 
-#[derive(clap::ValueEnum, Clone)]
+#[derive(clap::ValueEnum, Clone, Debug)]
 enum FfbTestEffect {
     Constant,
     Spring,
@@ -161,7 +161,7 @@ async fn run_translator(config: Config, foreground: bool) -> Result<()> {
     }
 
     // Setup signal handling for graceful shutdown
-    let mut translator = ProtocolTranslator::new(config).await?;
+    let translator = ProtocolTranslator::new(config).await?;
 
     let ctrl_c = tokio::signal::ctrl_c();
     
@@ -201,7 +201,7 @@ async fn discover_devices(detailed: bool) -> Result<()> {
     }
 
     println!("Found {} Thrustmaster device(s):", thrustmaster_devices.len());
-    for device in thrustmaster_devices {
+    for device in &thrustmaster_devices {
         println!("  VID:PID = {:04X}:{:04X}", device.vendor_id(), device.product_id());
         if detailed {
             println!("    Manufacturer: {:?}", device.manufacturer_string());
@@ -212,7 +212,7 @@ async fn discover_devices(detailed: bool) -> Result<()> {
     }
 
     println!("\nFound {} G29 device(s):", g29_devices.len());
-    for device in g29_devices {
+    for device in &g29_devices {
         println!("  VID:PID = {:04X}:{:04X}", device.vendor_id(), device.product_id());
         if detailed {
             println!("    Manufacturer: {:?}", device.manufacturer_string());
@@ -270,7 +270,7 @@ async fn wait_for_enter() {
     let _ = reader.read_line(&mut line).await;
 }
 
-async fn test_translation(config: Config, duration: u64) -> Result<()> {
+async fn test_translation(_config: Config, duration: u64) -> Result<()> {
     info!("Starting translation test for {} seconds...", duration);
     
     // This would create a translator without the virtual device
@@ -293,7 +293,8 @@ async fn generate_config(config_path: &PathBuf, force: bool) -> Result<()> {
     }
 
     let default_config = Config::default();
-    default_config.save_to_file(config_path.to_str().unwrap())?;
+    default_config.save_to_file(config_path.to_str().unwrap())
+        .map_err(|e| anyhow::anyhow!("Failed to save config: {}", e))?;
     
     info!("Generated default configuration file: {}", config_path.display());
     println!("Edit the configuration file to customize settings for your setup.");
@@ -301,7 +302,7 @@ async fn generate_config(config_path: &PathBuf, force: bool) -> Result<()> {
     Ok(())
 }
 
-async fn test_ffb_effects(config: Config, effect: FfbTestEffect, duration: u64) -> Result<()> {
+async fn test_ffb_effects(_config: Config, effect: FfbTestEffect, duration: u64) -> Result<()> {
     info!("Testing FFB effect: {:?} for {} seconds", effect, duration);
     
     // This would create test FFB effects and send them to the wheel

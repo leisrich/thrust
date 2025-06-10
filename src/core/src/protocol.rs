@@ -1,10 +1,10 @@
 //! Protocol translation between Thrustmaster and G29 formats
 
-use crate::device::{ThrustmasterInputReport, G29InputReport, G29OutputReport, IforceCommand};
+use crate::device::{ThrustmasterInputReport, G29InputReport, G29OutputReport};
 use crate::config::{InputConfig, OutputConfig, CurveType};
 use crate::ffb::FfbEffect;
 use crate::error::{TranslatorError, Result};
-use std::collections::HashMap;
+// use std::collections::HashMap;
 
 /// Handles input translation from Thrustmaster to G29 format
 pub struct InputTranslator {

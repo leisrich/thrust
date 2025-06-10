@@ -1,6 +1,6 @@
 //! Virtual G29 device implementation
 
-use crate::device::{G29InputReport, G29OutputReport, descriptors::G29_HID_DESCRIPTOR};
+use crate::device::{G29InputReport, G29OutputReport};
 use crate::config::G29Config;
 use crate::error::{TranslatorError, Result};
 use tokio::sync::mpsc;
@@ -22,7 +22,7 @@ impl VirtualG29Device {
     /// Create and initialize virtual G29 device
     pub async fn create(config: &G29Config) -> Result<Self> {
         let (input_sender, _input_receiver) = mpsc::unbounded_channel();
-        let (output_sender, output_receiver) = mpsc::unbounded_channel();
+        let (_output_sender, output_receiver) = mpsc::unbounded_channel();
 
         let mut device = Self {
             config: config.clone(),
@@ -140,7 +140,7 @@ struct VigEmDevice {
 
 #[cfg(target_os = "windows")]
 impl VigEmDevice {
-    async fn new(config: &G29Config) -> Result<Self> {
+    async fn new(_config: &G29Config) -> Result<Self> {
         // Initialize ViGEm bus and create G29 device
         // This would use the vigem-sys crate or similar
         Ok(Self {})
@@ -160,7 +160,7 @@ struct UInputDevice {
 
 #[cfg(target_os = "linux")]
 impl UInputDevice {
-    async fn new(config: &G29Config) -> Result<Self> {
+    async fn new(_config: &G29Config) -> Result<Self> {
         // Create uinput device with G29 HID descriptor
         // This would use the uinput crate or direct file operations
         Ok(Self {})
@@ -180,7 +180,7 @@ struct VirtualHIDDevice {
 
 #[cfg(target_os = "macos")]
 impl VirtualHIDDevice {
-    async fn new(config: &G29Config) -> Result<Self> {
+    async fn new(_config: &G29Config) -> Result<Self> {
         // Create virtual HID device using DriverKit
         // This would use IOKit bindings
         Ok(Self {})

@@ -2,7 +2,7 @@
 
 use crate::device::IforceCommand;
 use crate::config::FfbConfig;
-use crate::error::{TranslatorError, Result};
+use crate::error::Result;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
@@ -193,10 +193,10 @@ impl FfbEngine {
         Ok(vec![cmd])
     }
 
-    fn update_periodic_effect(&self, effect_id: u8, effect: &PeriodicEffect, now: Instant) -> Result<Option<IforceCommand>> {
+    fn update_periodic_effect(&self, _effect_id: u8, effect: &PeriodicEffect, now: Instant) -> Result<Option<IforceCommand>> {
         // Calculate current phase based on time and period
         let elapsed = now.duration_since(self.last_update);
-        let phase_increment = (elapsed.as_millis() as f32 / effect.period as f32 * 360.0) as u16;
+        let _phase_increment = (elapsed.as_millis() as f32 / effect.period as f32 * 360.0) as u16;
         
         // This would normally update the effect phase, but for simplicity we'll skip
         // dynamic updates in this basic implementation
